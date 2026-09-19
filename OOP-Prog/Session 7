@@ -1,1 +1,238 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Bai01
+{
+    // =========================
+    // 1. LỚP CHA
+    // =========================
+    abstract class ChuyenXe
+    {
+        protected string maSoChuyen;
+        protected string hoTenTaiXe;
+        protected string soXe;
+        protected double doanhThu;
+
+        // Constructor
+        public ChuyenXe(string maSoChuyen,
+                        string hoTenTaiXe,
+                        string soXe,
+                        double doanhThu)
+        {
+            this.maSoChuyen = maSoChuyen;
+            this.hoTenTaiXe = hoTenTaiXe;
+            this.soXe = soXe;
+            this.doanhThu = doanhThu;
+        }
+
+        // Cho phép lấy doanh thu
+        public double DoanhThu
+        {
+            get { return doanhThu; }
+        }
+
+        // Phương thức trừu tượng -> đa hình
+        public abstract void Xuat();
+    }
+
+
+    // =========================
+    // 2. LỚP CHUYẾN XE NỘI THÀNH
+    // =========================
+    class ChuyenXeNoiThanh : ChuyenXe
+    {
+        private int soTuyen;
+        private double soKm;
+
+        public ChuyenXeNoiThanh(
+            string maSoChuyen,
+            string hoTenTaiXe,
+            string soXe,
+            int soTuyen,
+            double soKm,
+            double doanhThu)
+            : base(maSoChuyen, hoTenTaiXe, soXe, doanhThu)
+        {
+            this.soTuyen = soTuyen;
+            this.soKm = soKm;
+        }
+
+        // Ghi đè phương thức của lớp cha
+        public override void Xuat()
+        {
+            Console.WriteLine(
+                "Nội thành | " +
+                "Mã chuyến: " + maSoChuyen +
+                " | Tài xế: " + hoTenTaiXe +
+                " | Số xe: " + soXe +
+                " | Số tuyến: " + soTuyen +
+                " | Số km: " + soKm +
+                " | Doanh thu: " + doanhThu);
+        }
+    }
+
+
+    // =========================
+    // 3. LỚP CHUYẾN XE NGOẠI THÀNH
+    // =========================
+    class ChuyenXeNgoaiThanh : ChuyenXe
+    {
+        private string noiDen;
+        private int soNgay;
+
+        public ChuyenXeNgoaiThanh(
+            string maSoChuyen,
+            string hoTenTaiXe,
+            string soXe,
+            string noiDen,
+            int soNgay,
+            double doanhThu)
+            : base(maSoChuyen, hoTenTaiXe, soXe, doanhThu)
+        {
+            this.noiDen = noiDen;
+            this.soNgay = soNgay;
+        }
+
+        // Ghi đè phương thức của lớp cha
+        public override void Xuat()
+        {
+            Console.WriteLine(
+                "Ngoại thành | " +
+                "Mã chuyến: " + maSoChuyen +
+                " | Tài xế: " + hoTenTaiXe +
+                " | Số xe: " + soXe +
+                " | Nơi đến: " + noiDen +
+                " | Số ngày: " + soNgay +
+                " | Doanh thu: " + doanhThu);
+        }
+    }
+
+
+    // =========================
+    // 4. CHƯƠNG TRÌNH CHÍNH
+    // =========================
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Danh sách chuyến xe
+            List<ChuyenXe> danhSach = new List<ChuyenXe>();
+
+
+            // =========================
+            // 5. TẠO 2 CHUYẾN NỘI THÀNH
+            // =========================
+
+            ChuyenXeNoiThanh xe1 = new ChuyenXeNoiThanh(
+                "NT01",
+                "Nguyen Van A",
+                "51A-12345",
+                10,
+                150,
+                5000000);
+
+            ChuyenXeNoiThanh xe2 = new ChuyenXeNoiThanh(
+                "NT02",
+                "Tran Van B",
+                "51B-67890",
+                15,
+                200,
+                7000000);
+
+
+            // =========================
+            // 6. TẠO 2 CHUYẾN NGOẠI THÀNH
+            // =========================
+
+            ChuyenXeNgoaiThanh xe3 = new ChuyenXeNgoaiThanh(
+                "NT03",
+                "Le Van C",
+                "51C-11111",
+                "Vung Tau",
+                2,
+                9000000);
+
+            ChuyenXeNgoaiThanh xe4 = new ChuyenXeNgoaiThanh(
+                "NT04",
+                "Pham Van D",
+                "51D-22222",
+                "Da Lat",
+                3,
+                12000000);
+
+
+            // Thêm vào danh sách
+            danhSach.Add(xe1);
+            danhSach.Add(xe2);
+            danhSach.Add(xe3);
+            danhSach.Add(xe4);
+
+
+            // =========================
+            // 7. XUẤT DANH SÁCH
+            // =========================
+
+            Console.WriteLine("===== DANH SÁCH CHUYẾN XE =====");
+
+            foreach (ChuyenXe xe in danhSach)
+            {
+                xe.Xuat();
+            }
+
+
+            // =========================
+            // 8. TÍNH TỔNG DOANH THU
+            // =========================
+
+            double tongDoanhThu = 0;
+
+            foreach (ChuyenXe xe in danhSach)
+            {
+                tongDoanhThu += xe.DoanhThu;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Tổng doanh thu: " + tongDoanhThu);
+
+
+            // =========================
+            // 9. TÍNH DOANH THU NỘI THÀNH
+            // =========================
+
+            double doanhThuNoiThanh = 0;
+
+            foreach (ChuyenXe xe in danhSach)
+            {
+                if (xe is ChuyenXeNoiThanh)
+                {
+                    doanhThuNoiThanh += xe.DoanhThu;
+                }
+            }
+
+            Console.WriteLine(
+                "Doanh thu nội thành: " + doanhThuNoiThanh);
+
+
+            // =========================
+            // 10. TÍNH DOANH THU NGOẠI THÀNH
+            // =========================
+
+            double doanhThuNgoaiThanh = 0;
+
+            foreach (ChuyenXe xe in danhSach)
+            {
+                if (xe is ChuyenXeNgoaiThanh)
+                {
+                    doanhThuNgoaiThanh += xe.DoanhThu;
+                }
+            }
+
+            Console.WriteLine(
+                "Doanh thu ngoại thành: " + doanhThuNgoaiThanh);
+
+            Console.ReadKey();
+        }
+    }
+}
 
